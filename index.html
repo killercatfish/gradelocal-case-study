@@ -1,0 +1,96 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>GradeLocal — Product Case Study</title>
+<meta name="description" content="GradeLocal, an AI feedback assistant for teachers that I designed and built, demonstrated with synthetic student data. Every model runs on local hardware, and the teacher approves every word.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://killercatfish.github.io/gradelocal-case-study/">
+<meta property="og:title" content="GradeLocal — Product Case Study">
+<meta property="og:description" content="An AI feedback assistant for teachers, designed and built solo, demonstrated with synthetic student data. Local models only; the teacher approves every word.">
+<meta name="twitter:card" content="summary">
+<style>
+@page { size: letter; margin: 0.45in 0.55in; }
+* { box-sizing: border-box; }
+body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 9.2pt; line-height: 1.38; color: #1d1d1f; margin: 0; }
+header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #1f4e79; padding-bottom: 4px; margin-bottom: 7px; }
+h1 { font-size: 17pt; margin: 0; color: #1f4e79; letter-spacing: -0.2px; }
+.who { font-size: 9pt; color: #555; text-align: right; }
+.lead { font-size: 9.8pt; margin: 0 0 8px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
+.stat { background: #eef3f8; border-radius: 5px; padding: 5px 8px; }
+.stat b { display: block; font-size: 14pt; color: #1f4e79; line-height: 1.15; }
+.stat span { font-size: 7.8pt; color: #444; }
+h2 { font-size: 10.5pt; color: #1f4e79; margin: 9px 0 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+p { margin: 0 0 4px; }
+table { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
+th { text-align: left; background: #eef3f8; color: #1f4e79; font-weight: 600; padding: 3px 6px; }
+td { padding: 3px 6px; border-bottom: 1px solid #e3e6ea; vertical-align: top; }
+ul { margin: 2px 0 0; padding-left: 15px; }
+li { margin-bottom: 2px; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.demo { margin: 4px 0 10px; }
+.demo video { width: 100%; border-radius: 6px; display: block; }
+.demo p { font-size: 8.5pt; color: #555; margin: 3px 0 0; }
+@media print { .demo { display: none; } }
+@media screen { body { max-width: 900px; margin: 28px auto; padding: 0 16px; font-size: 10pt; }
+  .cols, table { overflow-wrap: anywhere; } }
+@media screen and (max-width: 640px) { .stats { grid-template-columns: 1fr 1fr; } .cols { grid-template-columns: 1fr; } header { flex-direction: column; } .who { text-align: left; } }
+.foot { margin-top: 8px; font-size: 8pt; color: #555; border-top: 1px solid #ddd; padding-top: 4px; }
+</style></head><body>
+
+<header>
+  <h1>GradeLocal — Product Case Study</h1>
+  <div class="who">Joshua Gold · Online math &amp; CS teacher</div>
+</header>
+
+<p class="lead"><b>GradeLocal is an AI feedback assistant I designed and built, demonstrated here with synthetic student data.</b> It drafts personalized feedback emails and retake review sheets from student work. Two design requirements shaped it: every model runs on hardware the teacher owns, so student data never reaches a cloud AI, and the teacher approves every word before a student sees it.</p>
+
+<div class="stats">
+  <div class="stat"><b>143</b><span>passing automated tests</span></div>
+  <div class="stat"><b>117</b><span>commits since April 2026, built solo</span></div>
+  <div class="stat"><b>1 min</b><span>demo video, synthetic data only</span></div>
+</div>
+
+<div class="demo"><video src="GradeLocal_demo.mp4" controls playsinline preload="metadata"></video><p>One-minute demo with synthetic data: a made-up worksheet, answer key and quiz. Every model call runs on hardware I own.</p></div>
+<h2>The problem</h2>
+<p>Specific, encouraging written feedback helps students most, and it takes teachers the most time. Cloud AI tools would make it faster, but sending student work to a third-party server conflicts with student-data privacy policy. Districts have the same concern: they want the time savings, and they also need a clear answer about where student data goes. <b>Designed for:</b> the teacher, who reviews and approves; students, who read the feedback; and parents, who may read it with them.</p>
+
+<h2>Key decisions: trading automation for trust</h2>
+<table>
+<tr><th style="width:36%">Decision</th><th style="width:26%">Tradeoff accepted</th><th>Why</th></tr>
+<tr><td>Every model runs on local hardware; no cloud API sees student work</td><td>Smaller, slower models</td><td>It answers the privacy question completely, not with a policy promise</td></tr>
+<tr><td>The teacher approves every email and sheet before a student sees it</td><td>It's never "fully automatic"</td><td>Approval is both the compliance mechanism and the quality bar</td></tr>
+<tr><td>Math is checked symbolically; a failed step is dropped, never "repaired"</td><td>Some questions get no worked solution</td><td>A wrong worked solution does more harm than an empty box</td></tr>
+<tr><td>When the model can't verify an answer, it's marked "unverified" or left for the teacher</td><td>More manual work on hard cases</td><td>The tool is honest about what it doesn't know</td></tr>
+</table>
+
+<h2>Problems found and fixed</h2>
+<table>
+<tr><th style="width:46%">Problem</th><th>Fix</th></tr>
+<tr><td>A retake score alone doesn't show what was missed</td><td>Built review sheets: quiz screenshots in, a "how to solve it" sheet out, which the teacher edits and approves</td></tr>
+<tr><td>The model confidently "solved" a graph question it had misread</td><td>Questions with a figure go to the teacher; the model's own guesses are labeled "unverified"</td></tr>
+<tr><td>One quiz layout made the questions unreadable</td><td>The reader uses row colors; the quiz's own answer line cross-checks but never sets the answer</td></tr>
+<tr><td>Explaining a "mistake" on a question left blank doesn't help</td><td>Blank questions are taught from scratch instead</td></tr>
+<tr><td>Model-written math showed up as raw LaTeX in emails</td><td>Math is written as plain text</td></tr>
+</table>
+
+<div class="cols">
+<div>
+<h2>Testing</h2>
+<ul>
+<li><b>143 automated tests pass</b> on the review-sheet pipeline: reading marks, checking the math, writing steps, rendering, and the server routes.</li>
+<li><b>The one-minute demo</b> uses only synthetic data.</li>
+</ul>
+</div>
+<div>
+<h2>How I work as a PM</h2>
+<ul>
+<li><b>I start from the constraint.</b> Privacy shaped the product before any features did.</li>
+<li><b>I treat trust as a feature.</b> The tool says "unverified" rather than guess.</li>
+<li><b>I design for what users feel:</b> the app logs time to approve and whether a draft was edited, not model scores.</li>
+<li><b>I write decisions down,</b> with dated records of what was chosen, what was rejected, and why.</li>
+</ul>
+</div>
+</div>
+
+<p class="foot"><b>Next:</b> ship practice problems only with machine-checked answers. Built solo: 117 commits since April 2026, 143 automated tests. It runs on HKOS, a self-hosted AI stack I built, which I'm glad to walk through in an interview.</p>
+
+</body></html>
